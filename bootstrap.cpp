@@ -619,6 +619,16 @@ static void *my_dlopen(const char *filename, int flags)
 		MY_LOG("redirect to %s", link_file);
 		return dlopen(link_file, flags);
 	}
+	
+	//hook lib_burst_generated.so
+	int burst_postfix_len = strlen("lib_burst_generated.so");
+	if (len > burst_postfix_len && memcmp(filename + len - burst_postfix_len, "lib_burst_generated.so", burst_postfix_len) == 0)
+	{		
+		char link_file[256] = {0};
+		snprintf(link_file, sizeof(link_file), "%s/lib_burst_generated.so", g_data_file_path);
+		MY_LOG("redirect to %s", link_file);
+		return dlopen(link_file, flags);
+	}
 	return dlopen(filename, flags);
 }
 
